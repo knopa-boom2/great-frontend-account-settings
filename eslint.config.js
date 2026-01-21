@@ -1,10 +1,11 @@
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsparser from '@typescript-eslint/parser';
-import react from 'eslint-plugin-react';
-import reactHooks from 'eslint-plugin-react-hooks';
-import prettierConfig from 'eslint-config-prettier';
+const tseslint = require('@typescript-eslint/eslint-plugin');
+const tsparser = require('@typescript-eslint/parser');
+const react = require('eslint-plugin-react');
+const reactHooks = require('eslint-plugin-react-hooks');
+const prettierConfig = require('eslint-config-prettier');
+const simpleImportSort = require('eslint-plugin-simple-import-sort');
 
-export default [
+module.exports = [
     {
         files: ['**/*.{js,jsx,ts,tsx}'],
         languageOptions: {
@@ -21,11 +22,9 @@ export default [
             '@typescript-eslint': tseslint,
             react,
             'react-hooks': reactHooks,
+            'simple-import-sort': simpleImportSort,
         },
         rules: {
-            // Note: Formatting rules are handled by Prettier
-            // ESLint focuses on code quality and logic errors
-
             // TypeScript specific
             '@typescript-eslint/no-unused-vars': ['error', {
                 argsIgnorePattern: '^_',
@@ -33,8 +32,8 @@ export default [
             }],
 
             // React specific
-            'react/react-in-jsx-scope': 'off', // Not needed with React 17+
-            'react/prop-types': 'off', // Using TypeScript for prop validation
+            'react/react-in-jsx-scope': 'off',
+            'react/prop-types': 'off',
             'react-hooks/rules-of-hooks': 'error',
             'react-hooks/exhaustive-deps': 'warn',
 
@@ -42,6 +41,16 @@ export default [
             'no-console': ['warn', { allow: ['warn', 'error'] }],
             'prefer-const': 'error',
             'no-var': 'error',
+            'simple-import-sort/imports': ['error', {
+                groups: [
+                    ['^\\u0000'],
+                    ['^react', '^@?\\w'],
+                    ['^'],
+                    ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
+                    ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
+                    ['^.+\\.s?css$'],
+                ],
+            }],
         },
         settings: {
             react: {

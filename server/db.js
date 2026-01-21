@@ -18,27 +18,18 @@ db.exec(`
   ON account (lower(username));
 `);
 
-const columns = db.prepare("PRAGMA table_info('account')").all();
-const columnNames = new Set(columns.map((column) => column.name));
-
-if (!columnNames.has('first_name')) {
-  db.exec('ALTER TABLE account ADD COLUMN first_name TEXT');
-}
-
-if (!columnNames.has('last_name')) {
-  db.exec('ALTER TABLE account ADD COLUMN last_name TEXT');
-}
-
 const existing = db.prepare('SELECT id FROM account WHERE id = 1').get();
 if (!existing) {
   db.prepare(
     'INSERT INTO account (id, first_name, last_name, email, username, avatar_filename) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(1, 'Ada', 'Lovelace', 'ada@example.com', 'adal', null);
+  ).run(1, 'Alex', 'Johnson', 'alex@example.com', 'alexj', null);
 }
 
 function getAccount() {
   return db
-    .prepare('SELECT first_name, last_name, email, username, avatar_filename FROM account WHERE id = 1')
+    .prepare(
+      'SELECT first_name, last_name, email, username, avatar_filename FROM account WHERE id = 1'
+    )
     .get();
 }
 
@@ -51,7 +42,9 @@ function updateAccount({ firstName, lastName, email, username }) {
 
 function isUsernameUnique(username) {
   const row = db
-    .prepare('SELECT COUNT(1) AS count FROM account WHERE lower(username) = lower(?) AND id != 1')
+    .prepare(
+      'SELECT COUNT(1) AS count FROM account WHERE lower(username) = lower(?) AND id != 1'
+    )
     .get(username);
   return row.count === 0;
 }

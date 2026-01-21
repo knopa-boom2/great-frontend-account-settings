@@ -12,7 +12,7 @@ export default defineConfig({
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
-    publicPath: '/great-frontend-notifications-settings-section/',
+    publicPath: isDev ? '/' : '/great-frontend-notifications-settings-section/',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -63,5 +63,12 @@ export default defineConfig({
   devServer: {
     port: 3000,
     hot: true,
+    proxy: [
+      {
+        context: ['/api', '/uploads'],
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
+    ],
   },
 });
